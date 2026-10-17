@@ -1,0 +1,1081 @@
+
+/*
+ * Author       : Sripriyan
+ * College      : Rajalakshmi Engineering College
+ * Department   : AIML
+ * Project      : Online Complaint & Grievance Management System
+ * Generated on : 17-Oct-2026
+ * Version      : 1.0
+ */
+
+application "Online Complaint & Grievance Management System"
+{
+    date format = "dd-MMM-yyyy"
+    time zone = "Asia/Kolkata"
+    time format = "24-hr"
+
+    forms
+    {
+        /*
+         * FORM 1: COMPLAINT REGISTRATION
+         */
+
+        form Complaint_Form
+        {
+            displayname = "Register a Complaint"
+            success message = "Complaint submitted successfully!"
+
+            Section
+            (
+                type = section
+                row = 1
+                column = 0
+                width = medium
+            )
+
+            Complainant_Name
+            (
+                type = name
+                displayname = "Complainant Name"
+
+                prefix
+                (
+                    type = prefix
+                    displayname = "Prefix"
+                    visibility = false
+                    value = {"Mr.","Mrs.","Ms."}
+                )
+
+                first_name
+                (
+                    type = first_name
+                    displayname = "First Name"
+                )
+
+                last_name
+                (
+                    type = last_name
+                    displayname = "Last Name"
+                )
+
+                suffix
+                (
+                    type = suffix
+                    displayname = "Suffix"
+                    visibility = false
+                )
+
+                row = 1
+                column = 1
+                width = medium
+                personal data = true
+            )
+
+            Email_Address
+            (
+                type = email
+                displayname = "Email Address"
+                maxchar = 80
+                row = 1
+                column = 1
+                width = medium
+                personal data = true
+            )
+
+            Contact_Number
+            (
+                type = phonenumber
+                displayname = "Contact Number"
+                row = 1
+                column = 1
+                width = medium
+                personal data = true
+            )
+
+            Section2
+            (
+                type = section
+                displayname = "Complaint Details"
+                visibility = true
+                row = 2
+                column = 0
+                width = medium
+            )
+
+            Complaint_Title
+            (
+                type = text
+                displayname = "Complaint Title"
+                maxchar = 150
+                row = 2
+                column = 1
+                width = medium
+            )
+
+            Department
+            (
+                type = picklist
+                displayname = "Concerned Department"
+                maxchar = 100
+                values = {"Academics","Administration","Examination","Accounts","Library","Hostel","Transport","IT Support","Other"}
+                row = 2
+                column = 1
+                width = medium
+            )
+
+            Complaint_Category
+            (
+                type = picklist
+                displayname = "Complaint Category"
+                maxchar = 100
+                values = {"Academic","Infrastructure","Fee Related","Staff Related","Student Services","Technical Issue","Safety","Other"}
+                row = 2
+                column = 1
+                width = medium
+            )
+
+            Complaint_Description
+            (
+                type = textarea
+                displayname = "Complaint Description"
+                height = 150px
+                row = 3
+                column = 1
+                width = medium
+                description
+                [
+                    type = help_text
+                    message = "Describe the problem clearly, including relevant dates and details."
+                ]
+            )
+
+            Complaint_Location
+            (
+                type = text
+                displayname = "Location of Issue"
+                maxchar = 150
+                row = 3
+                column = 1
+                width = medium
+            )
+
+            Evidence_File
+            (
+                type = upload file
+                displayname = "Supporting Evidence"
+                browse = local_drive
+                row = 4
+                column = 1
+                width = medium
+            )
+
+            Submission_Date
+            (
+                type = date
+                displayname = "Complaint Date"
+                row = 4
+                column = 1
+                width = medium
+            )
+
+            Acknowledge
+            (
+                type = checkboxes
+                displayname = "Declaration"
+                values = {"I confirm that the information provided is accurate."}
+                row = 4
+                column = 1
+                width = medium
+            )
+
+            actions
+            {
+                on add
+                {
+                    submit
+                    (
+                        type = submit
+                        displayname = "Submit Complaint"
+                    )
+                }
+
+                on edit
+                {
+                    update
+                    (
+                        type = submit
+                        displayname = "Update Complaint"
+                    )
+
+                    cancel
+                    (
+                        type = cancel
+                        displayname = "Cancel"
+                    )
+                }
+            }
+
+            blueprint components
+            {
+                stages = {"Submitted","Under Review","Assigned","In Progress","Resolved","Closed","Rejected"}
+            }
+        }
+
+
+        /*
+         * FORM 2: AI COMPLAINT ANALYSIS
+         */
+
+        form AI_Complaint_Analysis
+        {
+            displayname = "AI Complaint Analysis"
+            success message = "Complaint analysis record added successfully!"
+
+            Section
+            (
+                type = section
+                row = 1
+                column = 0
+                width = medium
+            )
+
+            Complaint_Text
+            (
+                type = textarea
+                displayname = "Complaint Text"
+                height = 150px
+                row = 1
+                column = 1
+                width = medium
+            )
+
+            Extracted_Keywords
+            (
+                type = textarea
+                displayname = "Extracted Keywords"
+                height = 100px
+                row = 1
+                column = 1
+                width = medium
+
+                AI_Properties
+                (
+                    fieldtype = KeywordExtractor
+                    basefield = Complaint_Text
+                )
+            )
+
+            Sentiment_Result
+            (
+                type = picklist
+                displayname = "AI Sentiment Analysis"
+                values = {"Positive","Neutral","Negative"}
+                row = 2
+                column = 1
+                width = medium
+
+                AI_Properties
+                (
+                    fieldtype = SentimentAnalysis
+                    basefield = Complaint_Text
+                )
+            )
+
+            Predicted_Category
+            (
+                type = text
+                displayname = "Predicted Complaint Category"
+                row = 2
+                column = 1
+                width = medium
+
+                AI_Properties
+                (
+                    fieldtype = Prediction
+                    modelname = "Complaint_Category_Prediction_Model"
+                    supportingfield = {Complaint_Text}
+                )
+            )
+
+            Predicted_Priority
+            (
+                type = text
+                displayname = "Predicted Complaint Priority"
+                row = 3
+                column = 1
+                width = medium
+
+                AI_Properties
+                (
+                    fieldtype = Prediction
+                    modelname = "Complaint_Priority_Prediction_Model"
+                    supportingfield = {Complaint_Text}
+                )
+            )
+
+            AI_Summary
+            (
+                type = textarea
+                displayname = "Complaint Summary"
+                height = 100px
+                row = 3
+                column = 1
+                width = medium
+            )
+
+            Recommended_Action
+            (
+                type = textarea
+                displayname = "Recommended Action"
+                height = 100px
+                row = 4
+                column = 1
+                width = medium
+            )
+
+            actions
+            {
+                on add
+                {
+                    submit
+                    (
+                        type = submit
+                        displayname = "Save Analysis"
+                    )
+                }
+
+                on edit
+                {
+                    update
+                    (
+                        type = submit
+                        displayname = "Update Analysis"
+                    )
+
+                    cancel
+                    (
+                        type = cancel
+                        displayname = "Cancel"
+                    )
+                }
+            }
+        }
+
+
+        /*
+         * FORM 3: COMPLAINT RESOLUTION
+         */
+
+        form Complaint_Resolution
+        {
+            displayname = "Complaint Resolution Details"
+            success message = "Resolution details saved successfully!"
+
+            Section
+            (
+                type = section
+                row = 1
+                column = 0
+                width = medium
+            )
+
+            Complaint_Reference
+            (
+                type = text
+                displayname = "Complaint Reference ID"
+                row = 1
+                column = 1
+                width = medium
+            )
+
+            Assigned_Department
+            (
+                type = picklist
+                displayname = "Assigned Department"
+                values = {"Academics","Administration","Examination","Accounts","Library","Hostel","Transport","IT Support","Other"}
+                row = 1
+                column = 1
+                width = medium
+            )
+
+            Assigned_Officer
+            (
+                type = text
+                displayname = "Assigned Officer"
+                row = 2
+                column = 1
+                width = medium
+            )
+
+            Complaint_Status
+            (
+                type = picklist
+                displayname = "Complaint Status"
+                values = {"Submitted","Under Review","Assigned","In Progress","Resolved","Closed","Rejected"}
+                row = 2
+                column = 1
+                width = medium
+            )
+
+            Resolution_Notes
+            (
+                type = textarea
+                displayname = "Resolution Details"
+                height = 150px
+                row = 3
+                column = 1
+                width = medium
+            )
+
+            Resolution_Date
+            (
+                type = date
+                displayname = "Resolution Date"
+                row = 3
+                column = 1
+                width = medium
+            )
+
+            Feedback
+            (
+                type = textarea
+                displayname = "Complainant Feedback"
+                height = 100px
+                row = 4
+                column = 1
+                width = medium
+            )
+
+            actions
+            {
+                on add
+                {
+                    submit
+                    (
+                        type = submit
+                        displayname = "Save Resolution"
+                    )
+                }
+
+                on edit
+                {
+                    update
+                    (
+                        type = submit
+                        displayname = "Update Resolution"
+                    )
+
+                    cancel
+                    (
+                        type = cancel
+                        displayname = "Cancel"
+                    )
+                }
+            }
+        }
+    }
+
+
+    /*
+     * REPORTS
+     */
+
+    reports
+    {
+        default list Complaint_Register_Report
+        {
+            displayname = "Complaint Register Report"
+
+            show all rows from Complaint_Form
+            (
+                Complainant_Name
+                Email_Address
+                Contact_Number
+                Complaint_Title
+                Department
+                Complaint_Category
+                Complaint_Description
+                Complaint_Location
+                Evidence_File
+                Submission_Date
+                Acknowledge
+                ID
+            )
+
+            filters
+            (
+                Department
+                Complaint_Category
+                Submission_Date
+            )
+
+            sort by
+            (
+                Submission_Date custom
+            )
+        }
+
+        default list AI_Analysis_Report
+        {
+            displayname = "AI Complaint Analysis Report"
+
+            show all rows from AI_Complaint_Analysis
+            (
+                Complaint_Text
+                Extracted_Keywords
+                Sentiment_Result
+                Predicted_Category
+                Predicted_Priority
+                AI_Summary
+                Recommended_Action
+            )
+        }
+
+        list Complaint_Resolution_Report
+        {
+            displayname = "Complaint Resolution Report"
+
+            show all rows from Complaint_Resolution
+            (
+                Complaint_Reference
+                Assigned_Department
+                Assigned_Officer
+                Complaint_Status
+                Resolution_Notes
+                Resolution_Date
+                Feedback
+            )
+
+            filters
+            (
+                Assigned_Department
+                Complaint_Status
+                Resolution_Date
+            )
+        }
+    }
+
+
+    /*
+     * DASHBOARD AND CHARTS
+     */
+
+    pages
+    {
+        page Complaint_Dashboard
+        {
+            displayname = "Complaint Dashboard"
+
+            Content="<zml>
+            <layout>
+                <row>
+                    <column width='100%'>
+                        <chart
+                            elementName='Complaint_Category_Chart'
+                            type='Column'
+                            bgColor='#FFFFFF'
+                            theme='theme1'
+                            legendPos='center.top'
+                            heightType='auto'
+                            heightValue='300px'
+                            appLinkName='thisapp'
+                            formLinkName='Complaint_Form'
+                            xfield='Complaint_Category'
+                            yfields='count:Complaint_Category'
+                            quickFilters='Complaint_Category'
+                        />
+                    </column>
+                </row>
+                <row>
+                    <column width='100%'>
+                        <chart
+                            elementName='Department_Chart'
+                            type='Pie'
+                            bgColor='#FFFFFF'
+                            theme='theme1'
+                            legendPos='center.top'
+                            heightType='auto'
+                            heightValue='300px'
+                            appLinkName='thisapp'
+                            formLinkName='Complaint_Form'
+                            xfield='Department'
+                            yfields='count:Department'
+                        />
+                    </column>
+                </row>
+                <row>
+                    <column width='100%'>
+                        <chart
+                            elementName='Complaint_Status_Chart'
+                            type='Column'
+                            bgColor='#FFFFFF'
+                            theme='theme1'
+                            legendPos='center.top'
+                            heightType='auto'
+                            heightValue='300px'
+                            appLinkName='thisapp'
+                            formLinkName='Complaint_Resolution'
+                            xfield='Complaint_Status'
+                            yfields='count:Complaint_Status'
+                            quickFilters='Complaint_Status'
+                        />
+                    </column>
+                </row>
+            </layout>
+            </zml>"
+        }
+    }
+
+
+    /*
+     * VALIDATION AND EMAIL WORKFLOWS
+     */
+
+    workflow
+    {
+        form
+        {
+            Validate_Complaint as "Validate Complaint Details"
+            {
+                type = form
+                form = Complaint_Form
+                record event = on add
+
+                on validate
+                {
+                    actions
+                    {
+                        custom deluge script
+                        (
+                            if(input.Complaint_Title == "")
+                            {
+                                alert "Please enter a complaint title.";
+                                cancel submit;
+                            }
+
+                            if(input.Complaint_Description == "")
+                            {
+                                alert "Please describe your complaint.";
+                                cancel submit;
+                            }
+                        )
+                    }
+                }
+            }
+
+            Send_Complaint_Acknowledgement as "Send Complaint Acknowledgement"
+            {
+                type = form
+                form = Complaint_Form
+                record event = on add
+
+                on success
+                {
+                    actions
+                    {
+                        sendmail
+                        (
+                            from : "zoho.adminuserid"
+                            to : Email_Address
+                            subject : "Complaint Received Successfully"
+                            message : "<div>Dear Complainant,</div><br><div>Your complaint has been registered successfully.</div><br><div>Complaint Title: ${Complaint_Title}</div><div>Category: ${Complaint_Category}</div><div>Department: ${Department}</div><div>Submission Date: ${Submission_Date}</div><br><div>Our team will review your complaint and take appropriate action.</div><br><div>Thank you,<br>Complaint Management Team</div>"
+                        )
+                    }
+                }
+            }
+
+            Send_Resolution_Notification as "Send Resolution Notification"
+            {
+                type = form
+                form = Complaint_Resolution
+                record event = on add
+
+                on success
+                {
+                    actions
+                    {
+                        sendmail
+                        (
+                            from : "zoho.adminuserid"
+                            to : "complaints.admin@example.com"
+                            subject : "Complaint Resolution Record Updated"
+                            message : "A complaint resolution record has been added. Reference: ${Complaint_Reference}. Status: ${Complaint_Status}. Please review the resolution details."
+                        )
+                    }
+                }
+            }
+        }
+
+
+        /*
+         * COMPLAINT LIFECYCLE
+         */
+
+        blueprint
+        {
+            Complaint_Lifecycle as "Complaint Lifecycle"
+            {
+                type = Blueprint
+                form = Complaint_Form
+
+                start
+                {
+                }
+
+                stages
+                {
+                }
+
+                transitions
+                {
+                }
+            }
+        }
+    }
+
+
+    /*
+     * APPLICATION PERMISSIONS
+     */
+
+    share_settings
+    {
+        "Read"
+        {
+            name = "Read"
+            type = Users_Permissions
+            permissions = {Chat:true, Predefined:true, ApiAccess:false, PIIAccess:false, ePHIAccess:false}
+            description = "Read access subject to permitted records and fields."
+        }
+
+        "Write"
+        {
+            name = "Write"
+            type = Users_Permissions
+            permissions = {Chat:true, Predefined:true, ApiAccess:false, PIIAccess:false, ePHIAccess:false}
+            description = "Authorized users can create and update complaints."
+        }
+
+        "Developer"
+        {
+            name = "Developer"
+            type = Developer
+            permissions = {Chat:false, Predefined:true, ApiAccess:true, PIIAccess:false, ePHIAccess:false}
+            description = "Application development and configuration."
+        }
+
+        "Administrator"
+        {
+            name = "Administrator"
+            type = Users_Permissions
+            permissions = {Chat:true, Predefined:true, ApiAccess:true, PIIAccess:true, ePHIAccess:false}
+            description = "Authorized administrators manage complaint records and workflows."
+        }
+
+        roles
+        {
+            "Complaint Manager"
+            {
+                description = "Responsible for assigning complaints and monitoring resolution."
+            }
+        }
+    }
+
+
+    /*
+     * WEB APPLICATION CONFIGURATION
+     */
+
+    web
+    {
+        forms
+        {
+            form Complaint_Form
+            {
+                label placement = left
+            }
+
+            form AI_Complaint_Analysis
+            {
+                label placement = left
+            }
+
+            form Complaint_Resolution
+            {
+                label placement = left
+            }
+        }
+
+        reports
+        {
+            report Complaint_Register_Report
+            {
+                quickview
+                (
+                    layout
+                    (
+                        displaylayout = "classic"
+
+                        datablock1
+                        (
+                            fields
+                            (
+                                Complaint_Title
+                                Department
+                                Complaint_Category
+                                Submission_Date
+                                ID
+                            )
+                        )
+                    )
+
+                    menu
+                    (
+                        header
+                        (
+                            Edit
+                            View Record
+                        )
+                    )
+                )
+            }
+
+            report AI_Analysis_Report
+            {
+                quickview
+                (
+                    layout
+                    (
+                        displaylayout = "classic"
+
+                        datablock1
+                        (
+                            fields
+                            (
+                                Predicted_Category
+                                Predicted_Priority
+                                Sentiment_Result
+                                Extracted_Keywords
+                            )
+                        )
+                    )
+                )
+            }
+
+            report Complaint_Resolution_Report
+            {
+                quickview
+                (
+                    layout
+                    (
+                        displaylayout = "classic"
+
+                        datablock1
+                        (
+                            fields
+                            (
+                                Complaint_Reference
+                                Assigned_Department
+                                Assigned_Officer
+                                Complaint_Status
+                                Resolution_Date
+                            )
+                        )
+                    )
+                )
+            }
+        }
+
+        menu
+        {
+            space Space
+            {
+                displayname = "Complaint Management"
+                icon = "business-chart-bar-33"
+
+                section Complaint_Section
+                {
+                    displayname = "Complaints"
+                    icon = "tech-desktop"
+
+                    form Complaint_Form
+                    {
+                        icon = "tech-desktop"
+                    }
+
+                    report Complaint_Register_Report
+                    {
+                        icon = "business-chart-bar-33"
+                    }
+
+                    form Complaint_Resolution
+                    {
+                        icon = "design-todo"
+                    }
+
+                    report Complaint_Resolution_Report
+                    {
+                        icon = "design-todo"
+                    }
+                }
+
+                section AI_Section
+                {
+                    displayname = "AI Analysis"
+                    icon = "education-brain"
+
+                    form AI_Complaint_Analysis
+                    {
+                        icon = "education-brain"
+                    }
+
+                    report AI_Analysis_Report
+                    {
+                        icon = "business-chart-bar-33"
+                    }
+                }
+
+                section Dashboard_Section
+                {
+                    displayname = "Dashboard"
+                    icon = "business-chart-bar-33"
+
+                    page Complaint_Dashboard
+                    {
+                        icon = "business-chart-bar-33"
+                    }
+                }
+            }
+
+            preference
+            {
+                icon
+                {
+                    style = outline
+                }
+            }
+        }
+
+        customize
+        {
+            layout
+            {
+                theme = "theme_7"
+            }
+
+            font = "lato"
+
+            color options
+            {
+                color = "12"
+            }
+
+            logo
+            {
+                preference = "app_icon"
+                placement = "left"
+            }
+        }
+    }
+
+
+    /*
+     * MOBILE CONFIGURATION
+     */
+
+    phone
+    {
+        forms
+        {
+            form Complaint_Form
+            {
+                label placement = auto
+            }
+
+            form AI_Complaint_Analysis
+            {
+                label placement = auto
+            }
+
+            form Complaint_Resolution
+            {
+                label placement = auto
+            }
+        }
+
+        customize
+        {
+            layout = twocolumn
+            font = "default"
+            style = "3"
+
+            color options
+            {
+                color = chryslerpurple
+            }
+
+            logo
+            {
+                preference = "none"
+            }
+        }
+    }
+
+
+    /*
+     * TABLET CONFIGURATION
+     */
+
+    tablet
+    {
+        forms
+        {
+            form Complaint_Form
+            {
+                label placement = auto
+            }
+
+            form AI_Complaint_Analysis
+            {
+                label placement = auto
+            }
+
+            form Complaint_Resolution
+            {
+                label placement = auto
+            }
+        }
+
+        customize
+        {
+            layout = slidingpane
+            font = "default"
+            style = "3"
+
+            color options
+            {
+                color = lightred
+            }
+
+            logo
+            {
+                preference = "none"
+            }
+        }
+    }
+
+
+    /*
+     * LOCALIZATION
+     */
+
+    translation
+    {
+        {
+            "Language_Settings":
+            {
+                "LANGAGUE_WITH_LOGIN":"browser"
+            }
+        }
+    }
+}
